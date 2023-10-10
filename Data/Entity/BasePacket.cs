@@ -10,12 +10,12 @@ namespace gps_server.Data.Entity
 {
 	internal abstract class BasePacket
 	{
-		private ushort Starting { get; set; }
-		private ushort PacketId { get; set; }
-		private string DeviceId {  get; set; }
-		private ushort PacketOrderIndex { get; set; }
-		private ushort Checksum { get; set; }
-		private ushort Ending { get; set; }
+		public ushort Starting { get; set; }
+		public ushort PacketId { get; set; }
+		public string DeviceId {  get; set; }
+		public ushort PacketOrderIndex { get; set; }
+		public ushort Checksum { get; set; }
+		public ushort Ending { get; set; }
 		public virtual void SerializePacketBody(List<byte> buffer) { }
 		public virtual void DeserializePacketBody(List<byte> buffer, ref int offset) { }
 		public virtual void FillBodyResponseInformation(BasePacket receivedPacket) { }
