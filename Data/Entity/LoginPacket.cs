@@ -11,7 +11,7 @@ namespace gps_server.Data.Entity
 		public string Username { get; set; }
 		LoginPacket()
 		{
-			PacketId = 1;
+			PacketId = 2;
 		}
 		public override void SerializePacketBody(List<byte> buffer)
 		{

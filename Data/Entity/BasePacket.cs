@@ -162,5 +162,9 @@ namespace gps_server.Data.Entity
 			//Get two last bytes of fullchecksum and convert to ushort
 			return (ushort)((fullchecksum[fullchecksum.Length - 2] << 8) | fullchecksum[fullchecksum.Length - 1]);
 		}
+		public bool IsValidChecksum()
+		{
+			return CalculateChecksum() == Checksum;
+		}
 	}
 }
