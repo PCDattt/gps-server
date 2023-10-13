@@ -20,6 +20,7 @@ namespace gps_server.Data.Entity
 		public virtual void DeserializePacketBody(List<byte> buffer, ref int offset) { }
 		public virtual void FillBodyResponseInformation(BasePacket receivedPacket) { }
 		public virtual void PrintBodyInformation() { }
+		public virtual void ProcessPacketBody(List<byte> buffer) { }
 		public static void SerializeUInt16(List<byte> buffer, ushort value)
 		{
 			buffer.Add((byte)((value >> 8) & 0xFF));
@@ -134,13 +135,13 @@ namespace gps_server.Data.Entity
 
 		public void FillResponseInformation(BasePacket receivedPacket)
 		{
-			Starting = receivedPacket.Starting;
+			Starting = (ushort)(receivedPacket.Starting + 2);
 			PacketId = (ushort)(receivedPacket.PacketId + 1);
 			DeviceId = receivedPacket.DeviceId;
 			PacketOrderIndex = (ushort)(receivedPacket.PacketOrderIndex + 1);
 			FillBodyResponseInformation(receivedPacket);
 			Checksum = CalculateChecksum();
-			Ending = receivedPacket.Ending;
+			Ending = (ushort)(receivedPacket.Ending + 3);
 		}
 
 		public void PrintInformation()
@@ -152,15 +153,26 @@ namespace gps_server.Data.Entity
 			PrintBodyInformation();
 			Console.WriteLine("Packet checksum: " + Checksum);
 			Console.WriteLine("Packet ending: " + Ending);
+			Console.WriteLine();
+		}
+		public void ProcessPacketStarting(List<byte> buffer)
+		{
+			buffer.AddRange(Encoding.ASCII.GetBytes(Starting.ToString()));
+			buffer.AddRange(Encoding.ASCII.GetBytes(PacketId.ToString()));
+			buffer.AddRange(Encoding.ASCII.GetBytes(DeviceId));
+			buffer.AddRange(Encoding.ASCII.GetBytes(PacketOrderIndex.ToString()));
 		}
 		public ushort CalculateChecksum()
 		{
 			List<byte> buffer = new List<byte>();
-			SerializePacketStarting(buffer);
-			SerializePacketBody(buffer);
+			ProcessPacketStarting(buffer);
+			ProcessPacketBody(buffer);
 			byte[] fullchecksum = Crc32.Hash(buffer.ToArray());
+
 			//Get two last bytes of fullchecksum and convert to ushort
-			return (ushort)((fullchecksum[fullchecksum.Length - 2] << 8) | fullchecksum[fullchecksum.Length - 1]);
+			uint temp = BitConverter.ToUInt32(fullchecksum, 0);
+			byte[] bytes = BitConverter.GetBytes(temp & 0xFFFF);
+			return BitConverter.ToUInt16(bytes, 0);
 		}
 		public bool IsValidChecksum()
 		{

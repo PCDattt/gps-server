@@ -10,14 +10,9 @@ namespace gps_server.Data.Entity
 	{
 		public uint Latitude { get; set; }
 		public uint Longitude { get; set; }
-		InformationPacket()
+		public InformationPacket()
 		{
 			PacketId = 0;
-		}
-		public override void SerializePacketBody(List<byte> buffer)
-		{
-			SerializeUInt32(buffer, Latitude);
-			SerializeUInt32(buffer, Longitude);
 		}
 		public override void DeserializePacketBody(List<byte> buffer, ref int offset)
 		{
@@ -28,6 +23,11 @@ namespace gps_server.Data.Entity
 		{
 			Console.WriteLine("Latitude: " + Latitude);
 			Console.WriteLine("Longitude: " + Longitude);
+		}
+		public override void ProcessPacketBody(List<byte> buffer)
+		{
+			buffer.AddRange(Encoding.ASCII.GetBytes(Latitude.ToString()));
+			buffer.AddRange(Encoding.ASCII.GetBytes(Longitude.ToString()));
 		}
 	}
 }

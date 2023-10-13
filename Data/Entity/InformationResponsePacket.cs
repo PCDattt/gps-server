@@ -8,7 +8,7 @@ namespace gps_server.Data.Entity
 {
 	internal class InformationResponsePacket : ResponsePacket
 	{
-		InformationResponsePacket()
+		public InformationResponsePacket()
 		{
 			PacketId = 1;
 		}

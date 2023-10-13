@@ -17,5 +17,9 @@ namespace gps_server.Data.Entity
 		{
 			ReceivedPacketIndex = receivedPacket.PacketOrderIndex;
 		}
+		public override void ProcessPacketBody(List<byte> buffer)
+		{
+			buffer.AddRange(Encoding.ASCII.GetBytes(ReceivedPacketIndex.ToString()));
+		}
 	}
 }
