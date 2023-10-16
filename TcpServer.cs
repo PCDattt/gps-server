@@ -17,10 +17,11 @@ namespace gps_server
 			
 			listener.Start();
 			Console.WriteLine("Server started");
-			while(true)
+			Console.WriteLine("Waiting for a connection...");
+			while (true)
 			{
-				Console.WriteLine("Waiting for a connection...");
 				TcpClient client = await listener.AcceptTcpClientAsync();
+				Console.WriteLine("Client connected\n");
 				_ = HandleClientAsync(client);
 			}
 		}

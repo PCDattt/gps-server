@@ -8,18 +8,17 @@ namespace gps_server.Data.Entity
 {
 	internal class LoginPacket : BasePacket
 	{
-		public string Username { get; set; }
 		public LoginPacket()
 		{
 			PacketId = 2;
 		}
-		public override void DeserializePacketBody(List<byte> buffer, ref int offset)
-		{
-			Username = DeserializeString(buffer, ref offset);
-		}
-		public override void PrintBodyInformation()
-		{
-			Console.WriteLine("Username: " + Username);
-		}
+		//public override void deserializepacketbody(list<byte> buffer, ref int offset)
+		//{
+		//	username = deserializestring(buffer, ref offset);
+		//}
+		//public override void printbodyinformation()
+		//{
+		//	console.writeline("username: " + username);
+		//}
 	}
 }
