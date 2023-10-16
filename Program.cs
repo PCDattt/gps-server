@@ -10,7 +10,7 @@ using gps_server;
 
 namespace gps_server
 {
-	internal class Program
+	public class Program
 	{
 		public static async Task Main()
 		{
