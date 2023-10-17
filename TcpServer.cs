@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-using gps_server.Data.Entity;
+using gps_server.Data.Entity.Entities;
 
 namespace gps_server
 {
-	internal class TcpServer
+    internal class TcpServer
 	{
 		public static async Task Run()
 		{
