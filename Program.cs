@@ -15,13 +15,6 @@ namespace gps_server
 	{
 		public static async Task Main()
 		{
-			//DevicePacket devicePacket = new()
-			//{
-			//	DeviceId = 1,
-			//	RawData = "test"
-			//};
-			//DevicePacketRepository devicePacketRepository = new();
-			//_ = await devicePacketRepository.AddAsync(devicePacket);
 			await TcpServer.Run();
 		}
 	}
