@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using gps_server.Data.Entity.Entities;
+using gps_server.Logic.Business.Repositories;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace gps_server
 {
@@ -32,8 +34,9 @@ namespace gps_server
 			{
 				using (NetworkStream stream = client.GetStream())
 				{
-					byte[] buffer = new byte[1024];
+					byte[] buffer = new byte[30];
 					int bytesRead;
+					DevicePacketRepository devicePacketRepository = new();
 
 					while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
 					{
@@ -47,6 +50,14 @@ namespace gps_server
 						{
 							Console.WriteLine("Checksum is correct");
 							receivedPacket.PrintInformation();
+
+							//Save packet to database
+							DevicePacket devicePacket = new()
+							{
+								DeviceId = Int32.Parse(receivedPacket.DeviceId),
+								RawData = Convert.ToBase64String(buffer)
+							};
+							_ = await devicePacketRepository.AddAsync(devicePacket);
 
 							//Send response packet
 							BasePacket responsePacket = PacketFactory.GetPacket(packetId + 1);

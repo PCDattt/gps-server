@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Hashing;
-using gps_server.Data.Entity;
+using gps_server.Data.Entity.Entities;
 using gps_server;
+using gps_server.Logic.Business.Repositories;
 
 namespace gps_server
 {
@@ -14,6 +15,13 @@ namespace gps_server
 	{
 		public static async Task Main()
 		{
+			//DevicePacket devicePacket = new()
+			//{
+			//	DeviceId = 1,
+			//	RawData = "test"
+			//};
+			//DevicePacketRepository devicePacketRepository = new();
+			//_ = await devicePacketRepository.AddAsync(devicePacket);
 			await TcpServer.Run();
 		}
 	}

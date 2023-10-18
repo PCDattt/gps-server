@@ -8,7 +8,7 @@ using System.ComponentModel.Design;
 
 namespace gps_server.Data.Entity.Entities
 {
-    internal abstract class BasePacket
+    public abstract class BasePacket
     {
         public ushort Starting { get; set; }
         public ushort PacketId { get; set; }
