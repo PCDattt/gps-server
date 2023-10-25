@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace gps_server.Logic.Business.Interfaces
 {
-	internal interface IUserRepository
+	public interface IUserRepository
 	{
 		public Task<string> GeneratePasswordHashAsync(User user, string password);
 		public Task<User?> AddAsync(User user, string password);

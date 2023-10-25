@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace gps_server.Logic.Business.Repositories
 {
-	internal class UserRepository : IUserRepository
+	public class UserRepository : IUserRepository
 	{
 		private readonly EntityDbContext entityDbContext;
 		public UserRepository() 
