@@ -1,4 +1,8 @@
+using DataTransferObject.Contexts;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<EntityDbContext>();
 
 // Add services to the container.
 
