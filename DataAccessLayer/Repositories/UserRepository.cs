@@ -17,23 +17,9 @@ namespace DataAccessLayer.Repositories
 		{
 			this.entityDbContext = entityDbContext;
 		}
-		public async Task<string> GeneratePasswordHashAsync(User user, string password)
+		public async Task<User?> AddAsync(User user, string hashPassword)
 		{
-			// hash password
-			var passwordHasher = new PasswordHasher<User>();
-			var hash = passwordHasher.HashPassword(user, $"{password}");
-			return hash;
-		}
-
-		public async Task<User?> AddAsync(User user, string password)
-		{
-			var record = await GetByEmailAsync(user.Email);
-			if (record != null)
-			{
-				return null;
-			}
 			var now = DateTime.Now;
-			var hashPassword = await GeneratePasswordHashAsync(user, password);
 			_ = await entityDbContext.Users.AddAsync(new()
 			{
 				Username = user.Username,
@@ -78,12 +64,6 @@ namespace DataAccessLayer.Repositories
 					.ToList();
 			});
 		}
-		public async Task<bool> ValidatePasswordAsync(User user, string password)
-		{
-			var passwordHasher = new PasswordHasher<User>();
-			var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, $"{password}");
-			return result == PasswordVerificationResult.Success;
-		}
 		public async Task<IEnumerable<User>> SearchByNameAsync(string name)
 		{
 			return await Task.Run(() =>
@@ -94,28 +74,14 @@ namespace DataAccessLayer.Repositories
 		}
 		public async Task<bool> UpdateAsync(User user)
 		{
-			var record = await GetByIdAsync(user.Id);
-			if (record == null)
-			{
-				return false;
-			}
-			record.Name = user.Name;
-			record.Role = user.Role;
-			record.Permissions = user.Permissions;
-			record.ModifiedDate = DateTime.Now;
-			_ = entityDbContext.SaveChanges();
+			_ = entityDbContext.Users.Update(user);
+			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}	
-		public async Task<bool> DeleteAsync(int id)
+		public async Task<bool> DeleteAsync(User user)
 		{
-			var record = await GetByIdAsync(id);
-			if (record == null)
-			{
-				return false;
-			}
-			record.IsDeleted = true;
-			record.ModifiedDate = DateTime.Now;
-			_ = entityDbContext.SaveChanges();
+			_ = entityDbContext.Users.Update(user);
+			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}
 	}
