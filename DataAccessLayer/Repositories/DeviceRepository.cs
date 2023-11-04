@@ -18,11 +18,6 @@ namespace DataAccessLayer.Repositories
 		}
 		public async Task<Device?> AddAsync(Device device)
 		{
-			var record = await GetBySerialNumberAsync(device.SerialNumber);
-			if (record != null)
-			{
-				return null;
-			}
 			var now = DateTime.Now;
 			_ = await entityDbContext.Devices.AddAsync(new()
 			{
@@ -64,27 +59,14 @@ namespace DataAccessLayer.Repositories
 		}
 		public async Task<bool> UpdateAsync(Device device)
 		{
-			var record = await GetByIdAsync(device.Id);
-			if (record == null)
-			{
-				return false;
-			}
-			record.UserId = device.UserId;
-			record.SerialNumber = device.SerialNumber;
-			record.ModifiedDate = DateTime.Now;
-			_ = entityDbContext.SaveChanges();
+			_ = entityDbContext.Devices.Update(device);
+			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}
-		public async Task<bool> DeleteAsync(int id)
+		public async Task<bool> DeleteAsync(Device device)
 		{
-			var record = await GetByIdAsync(id);
-			if (record == null)
-			{
-				return false;
-			}
-			record.IsDeleted = true;
-			record.ModifiedDate = DateTime.Now;
-			_ = entityDbContext.SaveChanges();
+			_ = entityDbContext.Devices.Update(device);
+			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}
 	}

@@ -20,6 +20,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 //Services
 builder.Services.AddScoped<UserService, UserService>();
+builder.Services.AddScoped<DeviceService, DeviceService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
