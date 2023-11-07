@@ -1,3 +1,4 @@
+using BusinessLogicLayer.BackgroundServices;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
@@ -9,18 +10,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Dependency Injection
-// Repository
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IDeviceRepository, DeviceRepository>();
-builder.Services.AddTransient<IDevicePacketRepository, DevicePacketRepository>();
+//// Repository
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<IDevicePacketRepository, DevicePacketRepository>();
 
 // Database context
 builder.Services.AddDbContext<EntityDbContext>();
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 //Services
 builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<DeviceService, DeviceService>();
+
+//Background Services
+builder.Services.AddHostedService<TcpIpBackgroundService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

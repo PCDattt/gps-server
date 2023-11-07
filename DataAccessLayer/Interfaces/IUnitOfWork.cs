@@ -10,6 +10,5 @@ namespace DataAccessLayer.Interfaces
 	{
 		IUserRepository UserRepository { get; set; }
 		IDeviceRepository DeviceRepository { get; set; }
-		IDevicePacketRepository DevicePacketRepository { get; set; }
 	}
 }
