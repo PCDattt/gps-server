@@ -41,7 +41,7 @@ namespace DataAccessLayer.Repositories
 			return await Task.Run(() =>
 			{
 				return entityDbContext.Users
-					.Where(user => user.Id == id)
+					.Where(user => user.Id == id && user.IsDeleted == false)
 					.FirstOrDefault();
 			});
 		}
@@ -51,7 +51,7 @@ namespace DataAccessLayer.Repositories
 			return await Task.Run(() =>
 			{
 				return entityDbContext.Users
-					.Where(user => user.Email == email)
+					.Where(user => user.Email == email && user.IsDeleted == false)
 					.FirstOrDefault();
 			});
 		}
@@ -60,7 +60,7 @@ namespace DataAccessLayer.Repositories
 			return await Task.Run(() =>
 			{
 				return entityDbContext.Users
-					.Where(user => !user.IsDeleted)
+					.Where(user => user.IsDeleted == false)
 					.ToList();
 			});
 		}
@@ -69,7 +69,7 @@ namespace DataAccessLayer.Repositories
 			return await Task.Run(() =>
 			{
 				return entityDbContext.Users
-					.Where(user => user.Name.ToLower().Contains(name.ToLower())).ToList();
+					.Where(user => user.Name.ToLower().Contains(name.ToLower()) && user.IsDeleted == false).ToList();
 			});
 		}
 		public async Task<bool> UpdateAsync(User user)

@@ -35,7 +35,7 @@ namespace DataAccessLayer.Repositories
 			return await Task.Run(() =>
 			{
 				return entityDbContext.Devices
-					.Where(device => device.Id == id)
+					.Where(device => device.Id == id && device.IsDeleted == false)
 					.FirstOrDefault();
 			});
 		}
@@ -44,7 +44,7 @@ namespace DataAccessLayer.Repositories
 			return await Task.Run(() =>
 			{
 				return entityDbContext.Devices
-					.Where(device => device.SerialNumber == serialNumber)
+					.Where(device => device.SerialNumber == serialNumber && device.IsDeleted == false)
 					.FirstOrDefault();
 			});
 		}
@@ -59,13 +59,18 @@ namespace DataAccessLayer.Repositories
 		}
 		public async Task<bool> UpdateAsync(Device device)
 		{
-			_ = entityDbContext.Devices.Update(device);
+			var record = await GetByIdAsync(device.Id);
+			record.UserId = device.UserId;
+			record.SerialNumber = device.SerialNumber;
+			record.ModifiedDate = DateTime.Now;
 			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}
-		public async Task<bool> DeleteAsync(Device device)
+		public async Task<bool> DeleteAsync(int id)
 		{
-			_ = entityDbContext.Devices.Update(device);
+			var record = await GetByIdAsync(id);
+			record.IsDeleted = true;
+			record.ModifiedDate = DateTime.Now;
 			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}

@@ -14,6 +14,6 @@ namespace DataAccessLayer.Interfaces
 		public Task<Device?> GetBySerialNumberAsync(string serialNumber);
 		public Task<List<Device>> GetAllAsync();
 		public Task<bool> UpdateAsync(Device device);
-		public Task<bool> DeleteAsync(Device device);
+		public Task<bool> DeleteAsync(int id);
 	}
 }

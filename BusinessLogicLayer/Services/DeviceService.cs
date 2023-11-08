@@ -89,9 +89,7 @@ namespace BusinessLogicLayer.Services
 				{
 					return false;
 				}
-				record.IsDeleted = true;
-				record.ModifiedDate = DateTime.Now;
-				return await unitOfWork.DeviceRepository.DeleteAsync(record);
+				return await unitOfWork.DeviceRepository.DeleteAsync(id);
 			}
 			catch (Exception)
 			{

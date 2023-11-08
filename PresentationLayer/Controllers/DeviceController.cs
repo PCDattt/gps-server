@@ -53,7 +53,7 @@ namespace PresentationLayer.Controllers
 		/// <summary>
 		/// Get device by SerialNumber
 		/// </summary>
-		[HttpGet("{serialNumber}")]
+		[HttpGet("/serial/{serialNumber}")]
 		public async Task<IActionResult> GetBySerialNumber(string serialNumber)
 		{
 			var device = await deviceService.GetDeviceBySerialNumber(serialNumber);
@@ -64,9 +64,14 @@ namespace PresentationLayer.Controllers
 		/// Update device
 		/// </summary>
 		[HttpPut]
-		public async Task<IActionResult> Update(Device device)
+		public async Task<IActionResult> Update([FromBody] UpdateDeviceRequest request)
 		{
-			var result = await deviceService.UpdateDevice(device);
+			var result = await deviceService.UpdateDevice(new Device
+			{
+				Id = request.Id,
+				UserId = request.UserId,
+				SerialNumber = request.SerialNumber,
+			});
 			return Ok(result);
 		}
 		//Delete api/<DeviceController>/
