@@ -53,7 +53,7 @@ namespace PresentationLayer.Controllers
 		/// <summary>
 		/// Get device by SerialNumber
 		/// </summary>
-		[HttpGet("/serial/{serialNumber}")]
+		[HttpGet("serial/{serialNumber}")]
 		public async Task<IActionResult> GetBySerialNumber(string serialNumber)
 		{
 			var device = await deviceService.GetDeviceBySerialNumber(serialNumber);

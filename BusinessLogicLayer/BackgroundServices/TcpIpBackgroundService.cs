@@ -30,8 +30,7 @@ namespace BusinessLogicLayer.BackgroundServices
 				{
 					using (var scope = scopeFactory.CreateScope())
 					{
-						var devicePacketRepository = scope.ServiceProvider.GetRequiredService<IDevicePacketRepository>();
-						var deviceRepository = scope.ServiceProvider.GetRequiredService<IDeviceRepository>();
+						var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
 						byte[] buffer = new byte[30];
 						int bytesRead;
@@ -50,7 +49,7 @@ namespace BusinessLogicLayer.BackgroundServices
 								receivedPacket.PrintInformation();
 
 								//Get DeviceId
-								var device = await deviceRepository.GetBySerialNumberAsync(receivedPacket.DeviceId);
+								var device = await unitOfWork.DeviceRepository.GetBySerialNumberAsync(receivedPacket.DeviceId);
 								
 								//Save packet to database
 								DevicePacket devicePacket = new()
@@ -58,7 +57,7 @@ namespace BusinessLogicLayer.BackgroundServices
 									DeviceId = device.Id,
 									RawData = Convert.ToBase64String(buffer)
 								};
-								_ = await devicePacketRepository.AddAsync(devicePacket);
+								_ = await unitOfWork.DevicePacketRepository.AddAsync(devicePacket);
 
 								//Send response packet
 								BasePacket responsePacket = PacketFactory.GetPacket(packetId + 1);

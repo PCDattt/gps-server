@@ -14,10 +14,13 @@ namespace DataAccessLayer.Repositories
 		public required IDevicePacketRepository DevicePacketRepository { get; set; }
 		public UnitOfWork(
 			IDeviceRepository deviceRepository,
-			IUserRepository userRepository)
+			IUserRepository userRepository,
+			IDevicePacketRepository devicePacketRepository
+			)
 		{
 			this.UserRepository = userRepository;
 			this.DeviceRepository = deviceRepository;
+			this.DevicePacketRepository = devicePacketRepository;
 		}
 	}
 }

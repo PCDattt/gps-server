@@ -42,6 +42,16 @@ namespace DataAccessLayer.Repositories
 					.FirstOrDefault();
 			});
 		}
+		public async Task<List<DevicePacket>> GetAllByDeviceIdAsync(int deviceId)
+		{
+			return await Task.Run(() =>
+			{
+				return entityDbContext.DevicePackets
+					.Where(devicePacket => devicePacket.DeviceId == deviceId)
+					.OrderByDescending(devicePacket => devicePacket.CreatedDate)
+					.ToList();
+			});
+		}
 		public async Task<DevicePacket?> GetByIdAsync(int id)
 		{
 			return await Task.Run(() =>
