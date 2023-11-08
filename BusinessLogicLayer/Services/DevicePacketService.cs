@@ -19,11 +19,11 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var device = await unitOfWork.DeviceRepository.GetByIdAsync(deviceId);
-				if (device == null)
-				{
-					throw new Exception("Device not found");
-				}
+				//var device = await unitOfWork.DeviceRepository.GetByIdAsync(deviceId);
+				//if (device == null)
+				//{
+				//	throw new Exception("Device not found");
+				//}
 				return await unitOfWork.DevicePacketRepository.GetAllByDeviceIdAsync(deviceId);
 			}
 			catch (Exception)
@@ -35,11 +35,11 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var device = await unitOfWork.DeviceRepository.GetByIdAsync(deviceId);
-				if (device == null)
-				{
-					throw new Exception("Device not found");
-				}
+				//var device = await unitOfWork.DeviceRepository.GetByIdAsync(deviceId);
+				//if (device == null)
+				//{
+				//	throw new Exception("Device not found");
+				//}
 				return await unitOfWork.DevicePacketRepository.GetByDeviceIdAsync(deviceId);
 			}
 			catch (Exception)

@@ -31,7 +31,7 @@ builder.Services.AddHostedService<TcpIpBackgroundService>();
 //builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Fix bug auto Explicicit loading in DevicePacketService (GetDevicePacketByDeviceId)
 	options.JsonSerializerOptions.WriteIndented = true;
 });
 
