@@ -31,6 +31,8 @@ namespace BusinessLogicLayer.BackgroundServices
 					using (var scope = scopeFactory.CreateScope())
 					{
 						var devicePacketRepository = scope.ServiceProvider.GetRequiredService<IDevicePacketRepository>();
+						var deviceRepository = scope.ServiceProvider.GetRequiredService<IDeviceRepository>();
+
 						byte[] buffer = new byte[30];
 						int bytesRead;
 
@@ -47,10 +49,13 @@ namespace BusinessLogicLayer.BackgroundServices
 								Console.WriteLine("Checksum is correct");
 								receivedPacket.PrintInformation();
 
+								//Get DeviceId
+								var device = await deviceRepository.GetBySerialNumberAsync(receivedPacket.DeviceId);
+								
 								//Save packet to database
 								DevicePacket devicePacket = new()
 								{
-									DeviceId = Int32.Parse(receivedPacket.DeviceId),
+									DeviceId = device.Id,
 									RawData = Convert.ToBase64String(buffer)
 								};
 								_ = await devicePacketRepository.AddAsync(devicePacket);
