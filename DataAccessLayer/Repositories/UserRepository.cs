@@ -51,7 +51,7 @@ namespace DataAccessLayer.Repositories
 			return await Task.Run(() =>
 			{
 				return entityDbContext.Users
-					.Where(user => user.Email == email && !user.IsDeleted)
+					.Where(user => user.Email == email)
 					.FirstOrDefault();
 			});
 		}
@@ -74,13 +74,19 @@ namespace DataAccessLayer.Repositories
 		}
 		public async Task<bool> UpdateAsync(User user)
 		{
-			_ = entityDbContext.Users.Update(user);
+			var record = await GetByIdAsync(user.Id);
+			record.Email = user.Email;
+			record.Name = user.Name;
+			record.Role = user.Role;
+			record.ModifiedDate = DateTime.Now;
 			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}	
-		public async Task<bool> DeleteAsync(User user)
+		public async Task<bool> DeleteAsync(int id)
 		{
-			_ = entityDbContext.Users.Update(user);
+			var record = await GetByIdAsync(id);
+			record.IsDeleted = true;
+			record.ModifiedDate = DateTime.Now;
 			_ = await entityDbContext.SaveChangesAsync();
 			return true;
 		}

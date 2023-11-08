@@ -82,9 +82,15 @@ namespace PresentationLayer.Controllers
 		/// Update user
 		/// </summary>
 		[HttpPut]
-		public async Task<IActionResult> Update(User user)
+		public async Task<IActionResult> Update([FromBody] UpdateUserRequest request)
 		{
-			var result = await userService.UpdateUser(user);
+			var result = await userService.UpdateUser(new User
+			{
+				Id = request.Id,
+				Email = request.Email,
+				Role = request.Role,
+				Name = request.Name,
+			});
 			return Ok(result);
 		}
 

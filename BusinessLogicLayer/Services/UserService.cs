@@ -105,11 +105,7 @@ namespace BusinessLogicLayer.Services
 				{
 					return false;
 				}
-				record.Name = user.Name;
-				record.Role = user.Role;
-				record.Permissions = user.Permissions;
-				record.ModifiedDate = DateTime.Now;
-				return await unitOfWork.UserRepository.UpdateAsync(record);
+				return await unitOfWork.UserRepository.UpdateAsync(user);
 			}
 			catch (Exception)
 			{
@@ -125,9 +121,7 @@ namespace BusinessLogicLayer.Services
 				{
 					return false;
 				}
-				record.IsDeleted = true;
-				record.ModifiedDate = DateTime.Now;
-				return await unitOfWork.UserRepository.DeleteAsync(record);
+				return await unitOfWork.UserRepository.DeleteAsync(id);
 			}
 			catch (Exception)
 			{
