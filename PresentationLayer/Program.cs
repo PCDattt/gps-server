@@ -1,10 +1,12 @@
 using BusinessLogicLayer.BackgroundServices;
 using BusinessLogicLayer.Services;
+using BusinessLogicLayer;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using DataTransferObject.Contexts;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using BusinessLogicLayer.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,9 @@ builder.Services.AddScoped<IDevicePacketRepository, DevicePacketRepository>();
 builder.Services.AddDbContext<EntityDbContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+//Auto Mapper
+builder.Services.AddAutoMapper(typeof(DevicePacketProfiles));
+
 //Services
 builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<DeviceService, DeviceService>();
@@ -31,7 +36,7 @@ builder.Services.AddHostedService<TcpIpBackgroundService>();
 //builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Fix bug auto Explicicit loading in DevicePacketService (GetDevicePacketByDeviceId)
+	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 	options.JsonSerializerOptions.WriteIndented = true;
 });
 
