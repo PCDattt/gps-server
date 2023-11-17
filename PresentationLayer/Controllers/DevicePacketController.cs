@@ -35,6 +35,10 @@ namespace PresentationLayer.Controllers
 			var devicePackets = await devicePacketService.GetAllDevicePacketByDeviceId(deviceId);
 			return Ok(devicePackets);
 		}
+		// GET api/<DevicePacketController>/
+		/// <summary>
+		/// Get device packet by id
+		/// </summary>
 		[HttpGet("id/{id}")]
 		public async Task<IActionResult> GetById(int id)
 		{

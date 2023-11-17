@@ -33,6 +33,11 @@ builder.Services.AddScoped<DevicePacketService, DevicePacketService>();
 //Background Services
 builder.Services.AddHostedService<TcpIpBackgroundService>();
 
+builder.Services.AddCors(builder =>
+{
+	builder.AddPolicy("AllowAll", policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
 //builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -58,6 +63,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
