@@ -1,23 +1,23 @@
 import { useState } from 'react';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-export const Register = (props) => {
+export const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPass] = useState('');
     const [username, setUsername] = useState('');
     const [name, setFullname] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
     const [role] = useState('user');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const user = { username, password, email, name, role };
-        redirect('/login');
         fetch('http://localhost:5094/api/User', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user)
-        }).then(() => {redirect('/login')})
+        })
     }
 
     return (
@@ -34,9 +34,9 @@ export const Register = (props) => {
                 <input value={password} onChange={(e) => setPass(e.target.value)} type="password" placeholder="Enter your password" id="password" name="password" />
                 <label htmlFor="confirmPassword">Confirm Password</label>
                 <input value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)} type="password" placeholder="Confirm your password" id="confirmPassword" name="confirmPassword" />
-                <button type="submit">Register</button>
+                <button type="submit" onClick={() => navigate('/login')}>Register</button>
             </form>
-            <button className="link-btn" onClick={() => props.onFormSwitch('login')}>Already have account? Login here</button>
+            <button className="link-btn" onClick={() => navigate('/login')}>Already have account? Login here</button>
         </div>
     )
 }

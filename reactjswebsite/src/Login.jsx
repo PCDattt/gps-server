@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export const Login = (props) => {
+export const Login = () => {
     const [email, setEmail] = useState('');
-    const [pass, setPass] = useState('');
+    const [password, setPass] = useState('');
+    const [check, setCheck] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(email);
+        const user = { email, password };
+        fetch('http://localhost:5094/api/User/login', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user)
+        }).then(response => response.json())
+            .then(data => setCheck(data))
+            .then(() => { if (check === true) navigate('/profile', { state: { email: email } }) })
     }
 
     return (
@@ -16,10 +26,10 @@ export const Login = (props) => {
                 <label htmlFor="email">Email</label>
                 <input value={email} onChange={(e) => setEmail(e.target.value)} type={email} placeholder="Enter your email" id="email" name="email" />
                 <label htmlFor="password">Password</label>
-                <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="Enter your password" id="password" name="password" />
+                <input value={password} onChange={(e) => setPass(e.target.value)} type="password" placeholder="Enter your password" id="password" name="password" />
                 <button type="submit">Log in</button>
             </form>
-            <button className="link-btn" onClick={() => props.onFormSwitch('register')}>Don't have account? Register here</button>
+            <button className="link-btn" onClick={() => navigate('/register')}>Dont have account? Register here</button>
         </div>
   )
 }

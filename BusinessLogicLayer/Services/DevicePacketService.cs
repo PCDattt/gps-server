@@ -50,7 +50,6 @@ namespace BusinessLogicLayer.Services
 					throw new Exception("Device not found");
 				}
 				return autoMapper.Map<DevicePacket, DevicePacketResponse>(await unitOfWork.DevicePacketRepository.GetByDeviceIdAsync(deviceId));
-				//return await unitOfWork.DevicePacketRepository.GetByDeviceIdAsync(deviceId);
 			}
 			catch (Exception)
 			{

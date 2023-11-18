@@ -61,7 +61,7 @@ namespace PresentationLayer.Controllers
 		/// <summary>
 		/// Get user by email
 		/// </summary>
-		[HttpGet("email")]
+		[HttpGet("email/{email}")]
 		public async Task<IActionResult> GetByEmail(string email)
 		{
 			var user = await userService.GetUserByEmail(email);
@@ -70,7 +70,7 @@ namespace PresentationLayer.Controllers
 		/// <summary>
 		/// Get users by name
 		/// </summary>
-		[HttpGet("name")]
+		[HttpGet("name/{name}")]
 		public async Task<IActionResult> GetByName(string name)
 		{
 			var users = await userService.SearchUserByName(name);
@@ -104,5 +104,23 @@ namespace PresentationLayer.Controllers
 			var result = await userService.DeleteUser(id);
 			return Ok(result);
 		}
-	}
+		/// <summary>
+		/// User login
+		/// </summary>
+		[HttpPost("login")]
+		public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
+		{
+			var result = await userService.UserLogin(request.Email, request.Password);
+			return Ok(result);
+		}
+		/// <summary>
+		/// User profile
+		/// </summary>
+		[HttpGet("profile/{email}")]
+		public async Task<IActionResult> GetProfile(string email)
+		{
+			var result = await userService.GetUserProfile(email);
+			return Ok(result);
+		}
+ 	}
 }

@@ -1,5 +1,7 @@
-﻿using DataAccessLayer.Interfaces;
+﻿using AutoMapper;
+using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
+using DataTransferObject.Responses;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -12,9 +14,11 @@ namespace BusinessLogicLayer.Services
 	public class UserService
 	{
 		private readonly IUnitOfWork unitOfWork;
-		public UserService(IUnitOfWork unitOfWork)
+		private readonly IMapper autoMapper;
+		public UserService(IUnitOfWork unitOfWork, IMapper autoMapper)
 		{
 			this.unitOfWork = unitOfWork;
+			this.autoMapper = autoMapper;
 		}
 		public async Task<string> GeneratePasswordHashAsync(User user, string password)
 		{
@@ -122,6 +126,39 @@ namespace BusinessLogicLayer.Services
 					return false;
 				}
 				return await unitOfWork.UserRepository.DeleteAsync(id);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+		public async Task<bool> UserLogin(string email, string password)
+		{
+			try
+			{
+				var record = await GetUserByEmail(email);
+				if (record == null)
+				{
+					return false;
+				}
+				var check = await ValidatePasswordAsync(record, password);
+				return check;
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+		public async Task<UserProfileResponse?> GetUserProfile(string email)
+		{
+			try
+			{
+				var record = await GetUserByEmail(email);
+				if (record == null)
+				{
+					return null;
+				}
+				return autoMapper.Map<User, UserProfileResponse>(record);
 			}
 			catch (Exception)
 			{
