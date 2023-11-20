@@ -72,12 +72,12 @@ namespace DataAccessLayer.Repositories
 					.Where(user => user.Name.ToLower().Contains(name.ToLower()) && user.IsDeleted == false).ToList();
 			});
 		}
-		public async Task<bool> UpdateAsync(User user)
+		public async Task<bool> UpdateAsync(User user, string hashPassword)
 		{
-			var record = await GetByIdAsync(user.Id);
-			record.Email = user.Email;
+			var record = await GetByEmailAsync(user.Email);
 			record.Name = user.Name;
-			record.Role = user.Role;
+			record.Username = user.Username;
+			record.PasswordHash = hashPassword;
 			record.ModifiedDate = DateTime.Now;
 			_ = await entityDbContext.SaveChangesAsync();
 			return true;

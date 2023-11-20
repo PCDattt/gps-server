@@ -1,17 +1,24 @@
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Profile = () => {
     const location = useLocation();
     const [username, setUsername] = useState('')
-    const [fullname, setFullname] = useState('')
+    const [name, setName] = useState('')
     const [role, setRole] = useState('')
     const [avatarUri, setAvatarUri] = useState('')
+    const navigate = useNavigate();
 
 
     fetch("http://localhost:5094/api/User/profile/" + location.state.email)
         .then(response => response.json())
-        .then(data => { setUsername(data.username), setFullname(data.name), setRole(data.role), setAvatarUri(data.avatarUri) })
+        .then(data => { setUsername(data.username), setName(data.name), setRole(data.role), setAvatarUri(data.avatarUri) });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        navigate('/UpdateProfile', { state: { email: location.state.email, username: username, name: name } })
+    }
 
     return (
         <div className="auth-form-container">
@@ -28,7 +35,7 @@ export const Profile = () => {
                     </tr>
                     <tr>
                         <td>Fullname</td>
-                        <td>{fullname}</td>
+                        <td>{name}</td>
                     </tr>
                     <tr>
                         <td>Role</td>
@@ -40,6 +47,7 @@ export const Profile = () => {
                     </tr>
                 </tbody>
             </table>
+            <button type="submit" onClick={handleSubmit}>Update</button>
         </div>
     )
 }

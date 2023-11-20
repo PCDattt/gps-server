@@ -14,7 +14,7 @@ namespace DataAccessLayer.Interfaces
 		public Task<User?> GetByEmailAsync(string email);
 		public Task<List<User>> GetAllAsync();
 		public Task<IEnumerable<User>> SearchByNameAsync(string name);
-		public Task<bool> UpdateAsync(User user);
+		public Task<bool> UpdateAsync(User user, string hashPassword);
 		public Task<bool> DeleteAsync(int id);
 	}
 }

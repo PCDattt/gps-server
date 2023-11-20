@@ -1,21 +1,22 @@
+import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const Register = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPass] = useState('');
-    const [username, setUsername] = useState('');
-    const [name, setName] = useState('');
-    const [confirmPass, setConfirmPass] = useState('');
-    const [role] = useState('user');
+export const UpdateProfile = () => {
+    const location = useLocation();
     const navigate = useNavigate();
+    const [email] = useState(location.state.email)
+    const [username, setUsername] = useState(location.state.username)
+    const [name, setName] = useState(location.state.name)
+    const [password, setPass] = useState('');
+    const [confirmPass, setConfirmPass] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (password === confirmPass) {
-            const user = { username, password, email, name, role };
+            const user = { email, username, name, password };
             fetch('http://localhost:5094/api/User', {
-                method: 'POST',
+                method: 'PUT',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(user)
             })
@@ -25,23 +26,21 @@ export const Register = () => {
 
     return (
         <div className="auth-form-container">
-            <h2>Register</h2>
+            <h2>Update Profile</h2>
             <form className="register-form" onSubmit={handleSubmit}>
                 <label htmlFor="username">Username</label>
                 <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter your username" id="username" name="username" />
                 <label htmlFor="fullname">Full Name</label>
                 <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your fullname" id="fullname" name="fullname" />
-                <label htmlFor="email">Email</label>
-                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter your email" id="email" name="email" />
-                <label htmlFor="password">Password</label>
-                <input value={password} onChange={(e) => setPass(e.target.value)} type="password" placeholder="Enter your password" id="password" name="password" />
+                <label htmlFor="email">Password</label>
+                <input value={password} onChange={(e) => setPass(e.target.value)} type="password" placeholder="Enter your new password" id="password" name="password" />
                 <label htmlFor="confirmPassword">Confirm Password</label>
                 <input value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)} type="password" placeholder="Confirm your password" id="confirmPassword" name="confirmPassword" />
-                <button type="submit">Register</button>
+                <button type="submit">Confirm Update</button>
             </form>
-            <button className="link-btn" onClick={() => navigate('/login') }>Already have account? Login here</button>
+            <button className="link-btn" onClick={() => navigate(-1)}>Back</button>
         </div>
-    )
+    );
 }
 
-export default Register;
+export default UpdateProfile;

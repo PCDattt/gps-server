@@ -86,11 +86,10 @@ namespace PresentationLayer.Controllers
 		{
 			var result = await userService.UpdateUser(new User
 			{
-				Id = request.Id,
 				Email = request.Email,
-				Role = request.Role,
+				Username = request.Username,
 				Name = request.Name,
-			});
+			}, request.Password);
 			return Ok(result);
 		}
 

@@ -100,16 +100,21 @@ namespace BusinessLogicLayer.Services
 				throw;
 			}
 		}
-		public async Task<bool> UpdateUser(User user)
+		public async Task<bool> UpdateUser(User user, string password)
 		{
 			try
 			{
-				var record = await GetUserById(user.Id);
+				var record = await GetUserByEmail(user.Email);
 				if (record == null)
 				{
 					return false;
 				}
-				return await unitOfWork.UserRepository.UpdateAsync(user);
+				if(password == string.Empty)
+				{
+					return await unitOfWork.UserRepository.UpdateAsync(user, record.PasswordHash);
+				}
+				var hashPassword = await GeneratePasswordHashAsync(user, password);
+				return await unitOfWork.UserRepository.UpdateAsync(user, hashPassword);
 			}
 			catch (Exception)
 			{
