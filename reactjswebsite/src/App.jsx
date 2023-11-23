@@ -4,6 +4,7 @@ import { Login } from './Login.jsx';
 import { Register } from './Register.jsx';
 import { Profile } from './Profile.jsx';
 import { UpdateProfile } from './UpdateProfile.jsx';
+import { UpdateAvatar } from './UpdateAvatar.jsx';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/updateprofile" element={<UpdateProfile />} />
+              <Route path="/updateavatar" element={<UpdateAvatar />} />
           </Routes>
         </div>
   );

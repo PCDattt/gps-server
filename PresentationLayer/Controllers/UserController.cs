@@ -121,5 +121,24 @@ namespace PresentationLayer.Controllers
 			var result = await userService.GetUserProfile(email);
 			return Ok(result);
 		}
- 	}
+		/// <summary>
+		/// User upload avatar
+		/// </summary>
+		[HttpPost("avatar")]
+		public async Task<IActionResult> UploadAvatar([FromForm] string email, IFormFile file)
+		{
+			var result = await userService.UploadAvatar(email, file);
+			return Ok(result);
+		}
+		/// <summary>
+		/// User get avatar
+		/// </summary>
+		[HttpGet("avatar/{avatarUri}")]
+		public async Task<IActionResult> GetAvatar(string avatarUri)
+		{
+			var result = await userService.GetAvatar(avatarUri);
+			return Ok(result);
+		}
+
+	}
 }

@@ -78,10 +78,11 @@ namespace DataAccessLayer.Repositories
 			record.Name = user.Name;
 			record.Username = user.Username;
 			record.PasswordHash = hashPassword;
+			record.AvatarUri = user.AvatarUri;
 			record.ModifiedDate = DateTime.Now;
 			_ = await entityDbContext.SaveChangesAsync();
 			return true;
-		}	
+		}
 		public async Task<bool> DeleteAsync(int id)
 		{
 			var record = await GetByIdAsync(id);

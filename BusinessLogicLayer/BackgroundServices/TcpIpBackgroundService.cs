@@ -85,7 +85,7 @@ namespace BusinessLogicLayer.BackgroundServices
 		}
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			TcpListener listener = new TcpListener(IPAddress.Parse("192.168.1.12"), 12345);
+			TcpListener listener = new TcpListener(IPAddress.Parse("192.168.1.6"), 12345);
 
 			listener.Start();
 			//Console.WriteLine("Server started");

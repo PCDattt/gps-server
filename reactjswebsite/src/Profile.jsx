@@ -7,17 +7,30 @@ export const Profile = () => {
     const [username, setUsername] = useState('')
     const [name, setName] = useState('')
     const [role, setRole] = useState('')
-    const [avatarUri, setAvatarUri] = useState('')
+    const [avatarUri, setAvatarUri] = useState(null);
+    const [imageSrc, setImageSrc] = useState(null);
     const navigate = useNavigate();
-
 
     fetch("http://localhost:5094/api/User/profile/" + location.state.email)
         .then(response => response.json())
         .then(data => { setUsername(data.username), setName(data.name), setRole(data.role), setAvatarUri(data.avatarUri) });
 
-    const handleSubmit = (e) => {
+    if (avatarUri !== null) {
+        fetch("http://localhost:5094/api/User/avatar/" + avatarUri, {
+            method: 'GET',
+        }).then(response => response.json())
+            .then(data => setImageSrc('data:image/jpeg;base64,' + data.fileContents));
+        console.log(imageSrc)
+    }
+
+    const handleUpdateProfile = (e) => {
         e.preventDefault();
         navigate('/UpdateProfile', { state: { email: location.state.email, username: username, name: name } })
+    }
+
+    const handleUpdateAvatar = (e) => {
+        e.preventDefault();
+        navigate('/UpdateAvatar', { state: { email: location.state.email} })
     }
 
     return (
@@ -41,13 +54,15 @@ export const Profile = () => {
                         <td>Role</td>
                         <td>{role}</td>
                     </tr>
-                    <tr>
-                        <td>Avatar</td>
-                        <td>{avatarUri}</td>
-                    </tr>
                 </tbody>
             </table>
-            <button type="submit" onClick={handleSubmit}>Update</button>
+            {avatarUri && (
+                <img src={imageSrc} alt="Avatar" style={{ maxWidth: '100%', maxHeight: '200px' }} />
+            )}
+            <br></br>
+            <button type="submit" onClick={handleUpdateProfile}>Update Profile</button>
+            <br></br>
+            <button type="submit" onClick={handleUpdateAvatar}>Update Avatar</button>
         </div>
     )
 }

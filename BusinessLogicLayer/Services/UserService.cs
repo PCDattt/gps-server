@@ -2,7 +2,9 @@
 using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
 using DataTransferObject.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -169,6 +171,35 @@ namespace BusinessLogicLayer.Services
 			{
 				throw;
 			}
+		}
+		public async Task<bool> UploadAvatar(string email, IFormFile file)
+		{
+			if(file.Length > 0)
+			{
+				var record = await GetUserByEmail(email);
+				if (record == null)
+				{
+					return false;
+				}
+				var fileName = $"{Path.GetRandomFileName().Replace(".", string.Empty)}{Path.GetExtension(file.FileName)}";
+				var currentDirectory = System.IO.Directory.GetCurrentDirectory();
+				var filePath = Path.Combine(currentDirectory, "ExternalFiles", "UsersAvatar", fileName);
+				using (var stream = System.IO.File.Create(filePath))
+				{
+					await file.CopyToAsync(stream);
+				}
+				record.AvatarUri = fileName;
+				await unitOfWork.UserRepository.UpdateAsync(record, record.PasswordHash);
+				return true;
+			}
+			return false;
+		}
+		public async Task<FileContentResult> GetAvatar(string avatarUri)
+		{
+			var currentDirectory = System.IO.Directory.GetCurrentDirectory();
+			var filePath = Path.Combine(currentDirectory, "ExternalFiles", "UsersAvatar", avatarUri);
+			var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+			return new FileContentResult(fileBytes, "image/jpeg");
 		}
 	}
 }
