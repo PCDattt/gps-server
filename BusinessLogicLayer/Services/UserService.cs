@@ -5,9 +5,13 @@ using DataTransferObject.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,10 +21,12 @@ namespace BusinessLogicLayer.Services
 	{
 		private readonly IUnitOfWork unitOfWork;
 		private readonly IMapper autoMapper;
-		public UserService(IUnitOfWork unitOfWork, IMapper autoMapper)
+		private readonly IConfiguration configuration;
+		public UserService(IUnitOfWork unitOfWork, IMapper autoMapper, IConfiguration configuration)
 		{
 			this.unitOfWork = unitOfWork;
 			this.autoMapper = autoMapper;
+			this.configuration = configuration;
 		}
 		public async Task<string> GeneratePasswordHashAsync(User user, string password)
 		{
@@ -139,17 +145,41 @@ namespace BusinessLogicLayer.Services
 				throw;
 			}
 		}
-		public async Task<bool> UserLogin(string email, string password)
+		//Return string JWT Token
+		public async Task<string?> UserLogin(string email, string password)
 		{
 			try
 			{
 				var record = await GetUserByEmail(email);
 				if (record == null)
 				{
-					return false;
+					return string.Empty;
 				}
 				var check = await ValidatePasswordAsync(record, password);
-				return check;
+				if(!check)
+				{
+					return string.Empty;
+				}
+				var claims = new[]
+				{
+					new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+					new Claim("username",$"{record.Username}"),
+					new Claim("email",$"{record.Email}"),
+					new Claim(ClaimTypes.Role, $"{record.Role}"),
+				};
+				var tokenExpireIn = TimeSpan.FromDays(1);
+				var tokenHandler = new JwtSecurityTokenHandler();
+				var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? string.Empty);
+				var tokenDescriptor = new SecurityTokenDescriptor
+				{
+					Subject = new ClaimsIdentity(claims),
+					Expires = DateTime.UtcNow.AddDays(tokenExpireIn.Days),
+					SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+					Issuer = configuration["Jwt:Issuer"] ?? string.Empty,
+					Audience = configuration["Jwt:Audience"] ?? string.Empty,
+				};
+				var token = tokenHandler.CreateToken(tokenDescriptor);
+				return tokenHandler.WriteToken(token);
 			}
 			catch (Exception)
 			{

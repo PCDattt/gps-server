@@ -29,9 +29,11 @@ export const UpdateAvatar = () => {
         formData.append('file', avatarFile);
         fetch('http://localhost:5094/api/User/avatar', {
             method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
             body: formData
-        })
-        navigate('/login')
+        }).then(() => { navigate('/profile', { state: { email: email } }) })
     }
 
     return (

@@ -17,7 +17,10 @@ export const UpdateProfile = () => {
             const user = { email, username, name, password };
             fetch('http://localhost:5094/api/User', {
                 method: 'PUT',
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
                 body: JSON.stringify(user)
             })
             navigate('/login')

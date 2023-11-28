@@ -11,16 +11,21 @@ export const Profile = () => {
     const [imageSrc, setImageSrc] = useState(null);
     const navigate = useNavigate();
 
-    fetch("http://localhost:5094/api/User/profile/" + location.state.email)
+    fetch("http://localhost:5094/api/User/profile/" + location.state.email, {
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    })
         .then(response => response.json())
         .then(data => { setUsername(data.username), setName(data.name), setRole(data.role), setAvatarUri(data.avatarUri) });
 
     if (avatarUri !== null) {
         fetch("http://localhost:5094/api/User/avatar/" + avatarUri, {
-            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
         }).then(response => response.json())
             .then(data => setImageSrc('data:image/jpeg;base64,' + data.fileContents));
-        console.log(imageSrc)
     }
 
     const handleUpdateProfile = (e) => {
@@ -31,6 +36,11 @@ export const Profile = () => {
     const handleUpdateAvatar = (e) => {
         e.preventDefault();
         navigate('/UpdateAvatar', { state: { email: location.state.email} })
+    }
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        navigate('/login')
     }
 
     return (
@@ -63,6 +73,8 @@ export const Profile = () => {
             <button type="submit" onClick={handleUpdateProfile}>Update Profile</button>
             <br></br>
             <button type="submit" onClick={handleUpdateAvatar}>Update Avatar</button>
+            <br></br>
+            <button type="submit" onClick={handleLogout}>Log out</button>
         </div>
     )
 }

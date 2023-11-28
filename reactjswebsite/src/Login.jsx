@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPass] = useState('');
-    const [check, setCheck] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -14,9 +13,10 @@ export const Login = () => {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user)
-        }).then(response => response.json())
-            .then(data => setCheck(data))
-            .then(() => { if (check === true) navigate('/profile', { state: { email: email } }) })
+        }).then(response => response.text())
+            .then(data => localStorage.setItem('token', data))
+          .then(console.log(localStorage.getItem('token')))
+          .then(() => { navigate('/profile', { state: { email: email} }) })
     }
 
     return (

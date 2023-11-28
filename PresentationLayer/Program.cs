@@ -7,6 +7,10 @@ using DataTransferObject.Contexts;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using BusinessLogicLayer.Mapper;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,12 +49,55 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 	options.JsonSerializerOptions.WriteIndented = true;
 });
 
+builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
+{
+	options.RequireHttpsMetadata = false;
+	options.SaveToken = true;
+	options.TokenValidationParameters = new()
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+
+		ValidAudience = builder.Configuration["Jwt:Audience"] ?? string.Empty,
+		ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? string.Empty,
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
+	};
+});
+
+builder.Services.AddAuthorization();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
 	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+	options.AddSecurityDefinition("Bearer", new()
+	{
+		In = ParameterLocation.Header,
+		Description = "Please enter a valid token",
+		Name = "Authorization",
+		Type = SecuritySchemeType.Http,
+		BearerFormat = "JWT",
+		Scheme = "Bearer"
+	});
+	options.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{
+			new OpenApiSecurityScheme
+			{
+				Reference = new OpenApiReference
+				{
+					Id = "Bearer",
+					Type = ReferenceType.SecurityScheme
+				}
+			},
+			new List<string>()
+		}
+	});
 });
 
 var app = builder.Build();
@@ -68,6 +115,7 @@ app.UseCors("AllowAll");
 
 app.UseStaticFiles();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

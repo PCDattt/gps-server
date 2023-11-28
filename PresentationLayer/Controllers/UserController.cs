@@ -4,6 +4,8 @@ using BusinessLogicLayer.Services;
 using DataAccessLayer.Repositories;
 using DataTransferObject.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,6 +13,7 @@ namespace PresentationLayer.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize]
 	public class UserController : ControllerBase
 	{
 		private readonly UserService userService;
@@ -25,6 +28,7 @@ namespace PresentationLayer.Controllers
 		/// Add user
 		/// </summary>
 		[HttpPost]
+		[AllowAnonymous]
 		public async Task<IActionResult> Add([FromBody] CreateUserRequest request)
 		{
 			var result = await userService.AddUser(new User
@@ -42,6 +46,7 @@ namespace PresentationLayer.Controllers
 		/// </summary>
 		/// <returns>List user</returns>
 		[HttpGet]
+		[AllowAnonymous]
 		public async Task<IActionResult> GetAll()
 		{
 			var users = await userService.GetAllUser();
@@ -98,6 +103,7 @@ namespace PresentationLayer.Controllers
 		/// Delete user by id
 		/// </summary>
 		[HttpDelete("{id}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Delete(int id)
 		{
 			var result = await userService.DeleteUser(id);
@@ -107,6 +113,7 @@ namespace PresentationLayer.Controllers
 		/// User login
 		/// </summary>
 		[HttpPost("login")]
+		[AllowAnonymous]
 		public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
 		{
 			var result = await userService.UserLogin(request.Email, request.Password);

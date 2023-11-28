@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExternalFiles\**" />
+    <EmbeddedResource Remove="ExternalFiles\**" />
+    <None Remove="ExternalFiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
@@ -19,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ExternalFiles\UserAvatars\" />
     <Folder Include="Models\" />
   </ItemGroup>
 
