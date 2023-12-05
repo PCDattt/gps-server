@@ -85,16 +85,13 @@ namespace BusinessLogicLayer.BackgroundServices
 		}
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			TcpListener listener = new TcpListener(IPAddress.Parse("192.168.1.6"), 12345);
+			TcpListener listener = new TcpListener(IPAddress.Parse("192.168.22.109"), 12345);
 
 			listener.Start();
 			//Console.WriteLine("Server started");
 			//Console.WriteLine("Waiting for a connection...");
 			while (!stoppingToken.IsCancellationRequested)
-			{
-				//_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-				//await Task.Delay(1000, stoppingToken);
-				
+			{	
 				TcpClient client = await listener.AcceptTcpClientAsync();
 				//Console.WriteLine("Client connected\n");
 				_ = HandleClientAsync(client);

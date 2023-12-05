@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessLogicLayer.Models;
 using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
 using DataTransferObject.Responses;
@@ -50,6 +51,32 @@ namespace BusinessLogicLayer.Services
 					throw new Exception("Device not found");
 				}
 				return autoMapper.Map<DevicePacket, DevicePacketResponse>(await unitOfWork.DevicePacketRepository.GetByDeviceIdAsync(deviceId));
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+		public async Task<DevicePositionResponse> GetLatestPositionByDeviceId(int deviceId)
+		{
+			try
+			{
+				var devicePacket = await GetLatestDevicePacketByDeviceId(deviceId);
+				byte[] buffer = new byte[30];
+				buffer = Convert.FromBase64String(devicePacket.RawData);
+				List<byte> listbyte = buffer.ToList();
+				int packetId = BasePacket.GetPacketId(listbyte);
+				if(packetId != 0)
+				{
+					throw new Exception("Packet is not position packet");
+				}
+				InformationPacket packet = new InformationPacket();
+				packet.Deserialize(listbyte);
+				return new DevicePositionResponse
+				{
+					Latitude = packet.Latitude,
+					Longitude = packet.Longitude
+				};
 			}
 			catch (Exception)
 			{

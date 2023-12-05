@@ -57,6 +57,15 @@ namespace DataAccessLayer.Repositories
 					.ToList();
 			});
 		}
+		public async Task<List<Device>> GetAllByUserIdAsync(int id)
+		{
+			return await Task.Run(() =>
+			{
+				return entityDbContext.Devices
+					.Where(device => device.UserId == id && device.IsDeleted == false)
+					.ToList();
+			});
+		}
 		public async Task<bool> UpdateAsync(Device device)
 		{
 			var record = await GetByIdAsync(device.Id);

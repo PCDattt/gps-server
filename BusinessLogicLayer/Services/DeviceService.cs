@@ -1,5 +1,7 @@
-﻿using DataAccessLayer.Interfaces;
+﻿using AutoMapper;
+using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
+using DataTransferObject.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,11 @@ namespace BusinessLogicLayer.Services
 	public class DeviceService
 	{
 		private readonly IUnitOfWork unitOfWork;
-		public DeviceService(IUnitOfWork unitOfWork)
+		private readonly IMapper autoMapper;
+		public DeviceService(IUnitOfWork unitOfWork, IMapper autoMapper)
 		{
 			this.unitOfWork = unitOfWork;
+			this.autoMapper = autoMapper;
 		}
 		public async Task<Device?> GetDeviceById(int id)
 		{
@@ -42,6 +46,27 @@ namespace BusinessLogicLayer.Services
 			try
 			{
 				return await unitOfWork.DeviceRepository.GetAllAsync();
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+		public async Task<List<DeviceResponse>> GetAllDevicesByUserEmail(string email)
+		{
+			try
+			{
+				var user = await unitOfWork.UserRepository.GetByEmailAsync(email);
+				if (user == null)
+				{
+					throw new Exception("User not found");
+				}
+				var devices = await unitOfWork.DeviceRepository.GetAllByUserIdAsync(user.Id);
+				var devicesResponse = devices.Select
+					(
+						device => autoMapper.Map<Device, DeviceResponse>(device)
+					).ToList();
+				return devicesResponse;
 			}
 			catch (Exception)
 			{

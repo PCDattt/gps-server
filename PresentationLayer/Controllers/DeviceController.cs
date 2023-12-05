@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Services;
 using DataTransferObject.Entities;
 using DataTransferObject.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace PresentationLayer.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	//[Authorize]
 	public class DeviceController : ControllerBase
 	{
 		private readonly DeviceService deviceService;
@@ -48,6 +50,16 @@ namespace PresentationLayer.Controllers
 		{
 			var device = await deviceService.GetDeviceById(id);
 			return Ok(device);
+		}
+		//Get api/<DeviceController>/user/{email}
+		/// <summary>
+		/// Get all devices by user email
+		/// </summary>
+		[HttpGet("user/{email}")]
+		public async Task<IActionResult> GetAllByUserEmail(string email)
+		{
+			var devices = await deviceService.GetAllDevicesByUserEmail(email);
+			return Ok(devices);
 		}
 		//Get api/<DeviceController>/
 		/// <summary>

@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -7,6 +8,7 @@ namespace PresentationLayer.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	//[Authorize]
 	public class DevicePacketController : ControllerBase
 	{
 		private readonly DevicePacketService devicePacketService;
@@ -44,6 +46,16 @@ namespace PresentationLayer.Controllers
 		{
 			var devicePacket = await devicePacketService.GetById(id);
 			return Ok(devicePacket);
+		}
+		// GET api/<DevicePacketController>/
+		/// <summary>
+		/// Get latest position by device id
+		/// </summary>
+		[HttpGet("position/{deviceId}")]
+		public async Task<IActionResult> GetLatestPositionByDeviceId(int deviceId)
+		{
+			var devicePosition = await devicePacketService.GetLatestPositionByDeviceId(deviceId);
+			return Ok(devicePosition);
 		}
 	}
 }

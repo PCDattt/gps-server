@@ -15,5 +15,6 @@ namespace DataAccessLayer.Interfaces
 		public Task<List<Device>> GetAllAsync();
 		public Task<bool> UpdateAsync(Device device);
 		public Task<bool> DeleteAsync(int id);
+		Task<List<Device>> GetAllByUserIdAsync(int id);
 	}
 }
