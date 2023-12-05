@@ -66,7 +66,20 @@ namespace BusinessLogicLayer.Models
             return value;
         }
 
-        public static string DeserializeString(List<byte> buffer, ref int offset)
+		public static int DeserializeInt32(List<byte> buffer, ref int offset)
+		{
+			int value = 0;
+			if (offset + 4 > buffer.Count) return 0;
+
+			value = (buffer[offset] << 24);
+			value |= (buffer[offset + 1] << 16);
+			value |= (buffer[offset + 2] << 8);
+			value |= buffer[offset + 3];
+			offset += 4;
+			return value;
+		}
+
+		public static string DeserializeString(List<byte> buffer, ref int offset)
         {
             string value = string.Empty;
             ushort length = DeserializeUInt16(buffer, ref offset);

@@ -8,16 +8,16 @@ namespace BusinessLogicLayer.Models
 {
     internal class InformationPacket : BasePacket
     {
-        public uint Latitude { get; set; }
-        public uint Longitude { get; set; }
+        public int Latitude { get; set; }
+        public int Longitude { get; set; }
         public InformationPacket()
         {
             PacketId = 0;
         }
         public override void DeserializePacketBody(List<byte> buffer, ref int offset)
         {
-            Latitude = DeserializeUInt32(buffer, ref offset);
-            Longitude = DeserializeUInt32(buffer, ref offset);
+            Latitude = DeserializeInt32(buffer, ref offset);
+            Longitude = DeserializeInt32(buffer, ref offset);
         }
         public override void PrintBodyInformation()
         {
