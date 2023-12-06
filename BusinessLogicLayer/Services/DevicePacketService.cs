@@ -74,8 +74,8 @@ namespace BusinessLogicLayer.Services
 				packet.Deserialize(listbyte);
 				return new DevicePositionResponse
 				{
-					Latitude = packet.Latitude,
-					Longitude = packet.Longitude
+					Latitude = packet.Latitude / 1000000.0,
+					Longitude = packet.Longitude / 1000000.0
 				};
 			}
 			catch (Exception)

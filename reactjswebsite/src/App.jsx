@@ -5,6 +5,7 @@ import { Register } from './Register.jsx';
 import { Profile } from './Profile.jsx';
 import { UpdateProfile } from './UpdateProfile.jsx';
 import { UpdateAvatar } from './UpdateAvatar.jsx';
+import {DevicePosition} from './DevicePosition.jsx'; 
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/updateprofile" element={<UpdateProfile />} />
               <Route path="/updateavatar" element={<UpdateAvatar />} />
+              <Route path="/deviceposition" element={<DevicePosition />} />
           </Routes>
         </div>
   );

@@ -9,7 +9,7 @@ namespace PresentationLayer.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	//[Authorize]
+	[Authorize]
 	public class DeviceController : ControllerBase
 	{
 		private readonly DeviceService deviceService;

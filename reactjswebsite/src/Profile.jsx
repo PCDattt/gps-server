@@ -38,6 +38,11 @@ export const Profile = () => {
         navigate('/UpdateAvatar', { state: { email: location.state.email} })
     }
 
+    const handleDevicePosition = (e) => {
+        e.preventDefault();
+        navigate('/DevicePosition', { state: { email: location.state.email } })
+    }
+
     const handleLogout = (e) => {
         e.preventDefault();
         navigate('/login')
@@ -73,6 +78,8 @@ export const Profile = () => {
             <button type="submit" onClick={handleUpdateProfile}>Update Profile</button>
             <br></br>
             <button type="submit" onClick={handleUpdateAvatar}>Update Avatar</button>
+            <br></br>
+            <button type="submit" onClick={handleDevicePosition}>View Device Position</button>
             <br></br>
             <button type="submit" onClick={handleLogout}>Log out</button>
         </div>

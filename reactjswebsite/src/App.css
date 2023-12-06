@@ -55,3 +55,14 @@ button {
     text-decoration: underline;
 }
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Map container size*/
+.leaflet-container {
+    height: 100vh;
+    width: 100vw;
+}
