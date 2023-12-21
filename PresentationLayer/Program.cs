@@ -14,6 +14,7 @@ using System.Security.Claims;
 using MediatR;
 using DataAccessLayer.CQRS.UserFeature.Queries;
 using DataTransferObject.Entities;
+using DataAccessLayer.CQRS.UserFeature.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +22,12 @@ var builder = WebApplication.CreateBuilder(args);
 // MediatR
 builder.Services.AddScoped<IMediator, Mediator>();
 builder.Services.AddMediatR(typeof(GetUserByIdQuery).GetTypeInfo().Assembly);
-builder.Services.AddMediatR(typeof(GetUserByEmailQuery).GetTypeInfo().Assembly);
-builder.Services.AddMediatR(typeof(GetAllUserQuery).GetTypeInfo().Assembly);
-builder.Services.AddMediatR(typeof(SearchUserByNameQuery).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(GetUserByEmailQuery).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(GetAllUserQuery).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(SearchUserByNameQuery).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(AddUserCommand).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(UpdateUserCommand).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(DeleteUserCommand).GetTypeInfo().Assembly);
 
 // Dependency Injection
 //// Repository

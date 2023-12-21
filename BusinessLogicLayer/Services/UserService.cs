@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataAccessLayer.CQRS.UserFeature.Commands;
 using DataAccessLayer.CQRS.UserFeature.Queries;
 using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
@@ -21,13 +22,11 @@ namespace BusinessLogicLayer.Services
 {
 	public class UserService
 	{
-		private readonly IUnitOfWork unitOfWork;
 		private readonly IMapper autoMapper;
 		private readonly IConfiguration configuration;
 		private readonly IMediator mediator;
-		public UserService(IUnitOfWork unitOfWork, IMapper autoMapper, IConfiguration configuration, IMediator mediator)
+		public UserService(IMapper autoMapper, IConfiguration configuration, IMediator mediator)
 		{
-			this.unitOfWork = unitOfWork;
 			this.autoMapper = autoMapper;
 			this.configuration = configuration;
 			this.mediator = mediator;
@@ -61,7 +60,7 @@ namespace BusinessLogicLayer.Services
 					return null;
 				}
 				var hashPassword = await GeneratePasswordHashAsync(user, password);
-				return await unitOfWork.UserRepository.AddAsync(user, hashPassword);
+				return await mediator.Send(new AddUserCommand { user = user, hashPassword = hashPassword });
 			}
 			catch (Exception)
 			{
@@ -72,7 +71,6 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				//return await unitOfWork.UserRepository.GetByIdAsync(id);
 				return await mediator.Send(new GetUserByIdQuery { id = id });
 			}
 			catch (Exception)
@@ -84,7 +82,6 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				//return await unitOfWork.UserRepository.GetByEmailAsync(email);
 				return await mediator.Send(new GetUserByEmailQuery { email = email });
 			}
 			catch (Exception)
@@ -96,7 +93,6 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				//return await unitOfWork.UserRepository.GetAllAsync();
 				return await mediator.Send(new GetAllUserQuery());
 			}
 			catch (Exception)
@@ -108,7 +104,6 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				//return await unitOfWork.UserRepository.SearchByNameAsync(name);
 				return await mediator.Send(new SearchUserByNameQuery { name = name });
 			}
 			catch (Exception)
@@ -127,10 +122,10 @@ namespace BusinessLogicLayer.Services
 				}
 				if(password == string.Empty)
 				{
-					return await unitOfWork.UserRepository.UpdateAsync(user, record.PasswordHash);
+					return await mediator.Send(new UpdateUserCommand { user = user, hashPassword = record.PasswordHash });
 				}
 				var hashPassword = await GeneratePasswordHashAsync(user, password);
-				return await unitOfWork.UserRepository.UpdateAsync(user, hashPassword);
+				return await mediator.Send(new UpdateUserCommand { user = user, hashPassword = hashPassword });
 			}
 			catch (Exception)
 			{
@@ -141,12 +136,7 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var record = await GetUserById(id);
-				if (record == null)
-				{
-					return false;
-				}
-				return await unitOfWork.UserRepository.DeleteAsync(id);
+				return await mediator.Send(new DeleteUserCommand { id = id });
 			}
 			catch (Exception)
 			{
@@ -227,7 +217,7 @@ namespace BusinessLogicLayer.Services
 					await file.CopyToAsync(stream);
 				}
 				record.AvatarUri = fileName;
-				await unitOfWork.UserRepository.UpdateAsync(record, record.PasswordHash);
+				await mediator.Send(new UpdateUserCommand { user = record, hashPassword = record.PasswordHash });
 				return true;
 			}
 			return false;
