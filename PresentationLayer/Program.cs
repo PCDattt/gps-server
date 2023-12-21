@@ -11,10 +11,19 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
+using MediatR;
+using DataAccessLayer.CQRS.UserFeature.Queries;
+using DataTransferObject.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// MediatR
+builder.Services.AddScoped<IMediator, Mediator>();
+builder.Services.AddMediatR(typeof(GetUserByIdQuery).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(GetUserByEmailQuery).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(GetAllUserQuery).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(SearchUserByNameQuery).GetTypeInfo().Assembly);
 
 // Dependency Injection
 //// Repository

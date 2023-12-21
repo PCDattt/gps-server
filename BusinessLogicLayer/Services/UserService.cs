@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using DataAccessLayer.CQRS.UserFeature.Queries;
 using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
 using DataTransferObject.Responses;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +24,13 @@ namespace BusinessLogicLayer.Services
 		private readonly IUnitOfWork unitOfWork;
 		private readonly IMapper autoMapper;
 		private readonly IConfiguration configuration;
-		public UserService(IUnitOfWork unitOfWork, IMapper autoMapper, IConfiguration configuration)
+		private readonly IMediator mediator;
+		public UserService(IUnitOfWork unitOfWork, IMapper autoMapper, IConfiguration configuration, IMediator mediator)
 		{
 			this.unitOfWork = unitOfWork;
 			this.autoMapper = autoMapper;
 			this.configuration = configuration;
+			this.mediator = mediator;
 		}
 		public async Task<string> GeneratePasswordHashAsync(User user, string password)
 		{
@@ -68,7 +72,8 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				return await unitOfWork.UserRepository.GetByIdAsync(id);
+				//return await unitOfWork.UserRepository.GetByIdAsync(id);
+				return await mediator.Send(new GetUserByIdQuery { id = id });
 			}
 			catch (Exception)
 			{
@@ -79,7 +84,8 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				return await unitOfWork.UserRepository.GetByEmailAsync(email);
+				//return await unitOfWork.UserRepository.GetByEmailAsync(email);
+				return await mediator.Send(new GetUserByEmailQuery { email = email });
 			}
 			catch (Exception)
 			{
@@ -90,7 +96,8 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				return await unitOfWork.UserRepository.GetAllAsync();
+				//return await unitOfWork.UserRepository.GetAllAsync();
+				return await mediator.Send(new GetAllUserQuery());
 			}
 			catch (Exception)
 			{
@@ -101,7 +108,8 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				return await unitOfWork.UserRepository.SearchByNameAsync(name);
+				//return await unitOfWork.UserRepository.SearchByNameAsync(name);
+				return await mediator.Send(new SearchUserByNameQuery { name = name });
 			}
 			catch (Exception)
 			{

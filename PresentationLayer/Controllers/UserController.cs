@@ -13,7 +13,7 @@ namespace PresentationLayer.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	[Authorize]
+	//[Authorize]
 	public class UserController : ControllerBase
 	{
 		private readonly UserService userService;
