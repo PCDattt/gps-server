@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using DataAccessLayer.CQRS.DeviceFeature.Queries;
+using DataAccessLayer.CQRS.UserFeature.Queries;
 using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
 using DataTransferObject.Responses;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +16,19 @@ namespace BusinessLogicLayer.Services
 	public class DeviceService
 	{
 		private readonly IUnitOfWork unitOfWork;
+		private readonly IMediator mediator;
 		private readonly IMapper autoMapper;
-		public DeviceService(IUnitOfWork unitOfWork, IMapper autoMapper)
+		public DeviceService(IUnitOfWork unitOfWork, IMediator mediator, IMapper autoMapper)
 		{
 			this.unitOfWork = unitOfWork;
+			this.mediator = mediator;
 			this.autoMapper = autoMapper;
 		}
 		public async Task<Device?> GetDeviceById(int id)
 		{
 			try
 			{
-				return await unitOfWork.DeviceRepository.GetByIdAsync(id);
+				return await mediator.Send(new GetDeviceByIdQuery { id = id });
 			}
 			catch (Exception)
 			{
@@ -34,7 +39,7 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				return await unitOfWork.DeviceRepository.GetBySerialNumberAsync(serialNumber);
+				return await mediator.Send(new GetDeviceBySerialNumberQuery { serialNumber = serialNumber });
 			}
 			catch (Exception)
 			{
@@ -45,7 +50,7 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				return await unitOfWork.DeviceRepository.GetAllAsync();
+				return await mediator.Send(new GetAllDeviceQuery());
 			}
 			catch (Exception)
 			{
@@ -56,12 +61,12 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var user = await unitOfWork.UserRepository.GetByEmailAsync(email);
+				var user = await mediator.Send(new GetUserByEmailQuery { email = email });
 				if (user == null)
 				{
 					throw new Exception("User not found");
 				}
-				var devices = await unitOfWork.DeviceRepository.GetAllByUserIdAsync(user.Id);
+				var devices = await mediator.Send(new GetAllDeviceByUserIdQuery { id = user.Id });
 				var devicesResponse = devices.Select
 					(
 						device => autoMapper.Map<Device, DeviceResponse>(device)

@@ -15,6 +15,7 @@ using MediatR;
 using DataAccessLayer.CQRS.UserFeature.Queries;
 using DataTransferObject.Entities;
 using DataAccessLayer.CQRS.UserFeature.Commands;
+using DataAccessLayer.CQRS.DeviceFeature.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddMediatR(typeof(GetUserByIdQuery).GetTypeInfo().Assembly);
 //builder.Services.AddMediatR(typeof(AddUserCommand).GetTypeInfo().Assembly);
 //builder.Services.AddMediatR(typeof(UpdateUserCommand).GetTypeInfo().Assembly);
 //builder.Services.AddMediatR(typeof(DeleteUserCommand).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(GetDeviceByIdQuery).GetTypeInfo().Assembly);
 
 // Dependency Injection
 //// Repository
