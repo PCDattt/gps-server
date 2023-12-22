@@ -13,7 +13,7 @@ namespace PresentationLayer.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	//[Authorize]
+	[Authorize]
 	public class UserController : ControllerBase
 	{
 		private readonly UserService userService;
@@ -103,7 +103,7 @@ namespace PresentationLayer.Controllers
 		/// Delete user by id
 		/// </summary>
 		[HttpDelete("{id}")]
-		//[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Delete(int id)
 		{
 			var result = await userService.DeleteUser(id);

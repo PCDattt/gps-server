@@ -15,4 +15,8 @@
     <ProjectReference Include="..\DataTransferObject\DataTransferObject.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CQRS\DevicePacketFeature\Commands\" />
+  </ItemGroup>
+
 </Project>

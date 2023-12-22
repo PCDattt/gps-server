@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataAccessLayer.CQRS.DeviceFeature.Commands;
 using DataAccessLayer.CQRS.DeviceFeature.Queries;
 using DataAccessLayer.CQRS.UserFeature.Queries;
 using DataAccessLayer.Interfaces;
@@ -15,12 +16,10 @@ namespace BusinessLogicLayer.Services
 {
 	public class DeviceService
 	{
-		private readonly IUnitOfWork unitOfWork;
 		private readonly IMediator mediator;
 		private readonly IMapper autoMapper;
-		public DeviceService(IUnitOfWork unitOfWork, IMediator mediator, IMapper autoMapper)
+		public DeviceService(IMediator mediator, IMapper autoMapper)
 		{
-			this.unitOfWork = unitOfWork;
 			this.mediator = mediator;
 			this.autoMapper = autoMapper;
 		}
@@ -82,12 +81,12 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var record = await GetDeviceBySerialNumber(device.SerialNumber);
+				var record = await mediator.Send(new GetDeviceBySerialNumberQuery { serialNumber = device.SerialNumber });
 				if (record != null)
 				{
 					return null;
 				}
-				return await unitOfWork.DeviceRepository.AddAsync(device);
+				return await mediator.Send(new AddDeviceCommand { device = device });
 			}
 			catch (Exception)
 			{
@@ -98,12 +97,12 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var record = await GetDeviceById(device.Id);
+				var record = await mediator.Send(new GetDeviceByIdQuery { id = device.Id });
 				if (record == null)
 				{
 					return false;
 				}
-				return await unitOfWork.DeviceRepository.UpdateAsync(device);
+				return await mediator.Send(new UpdateDeviceCommand { device = device });
 			}
 			catch (Exception)
 			{
@@ -114,12 +113,7 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var record = await GetDeviceById(id);
-				if (record == null)
-				{
-					return false;
-				}
-				return await unitOfWork.DeviceRepository.DeleteAsync(id);
+				return await mediator.Send(new DeleteDeviceCommand { id = id });
 			}
 			catch (Exception)
 			{
