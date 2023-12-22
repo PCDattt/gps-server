@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.Models;
+using DataAccessLayer.CQRS.DeviceFeature.Queries;
+using DataAccessLayer.CQRS.DevicePacketFeature.Queries;
 using DataAccessLayer.Interfaces;
 using DataTransferObject.Entities;
 using DataTransferObject.Responses;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,23 +16,23 @@ namespace BusinessLogicLayer.Services
 {
 	public class DevicePacketService
 	{
-		private readonly IUnitOfWork unitOfWork;
+		private readonly IMediator mediator;
 		private readonly IMapper autoMapper;
-		public DevicePacketService(IUnitOfWork unitOfWork, IMapper autoMapper)
+		public DevicePacketService(IMediator mediator, IMapper autoMapper)
 		{
-			this.unitOfWork = unitOfWork;
+			this.mediator = mediator;
 			this.autoMapper = autoMapper;
 		}
 		public async Task<List<DevicePacketResponse>> GetAllDevicePacketByDeviceId(int deviceId)
 		{
 			try
 			{
-				var device = await unitOfWork.DeviceRepository.GetByIdAsync(deviceId);
+				var device = await mediator.Send(new GetDeviceByIdQuery { id = deviceId });
 				if (device == null)
 				{
 					throw new Exception("Device not found");
 				}
-				var devicePackets = await unitOfWork.DevicePacketRepository.GetAllByDeviceIdAsync(deviceId);
+				var devicePackets = await mediator.Send(new GetAllDevicePacketByDeviceIdQuery { deviceId = deviceId });
 				var devicePacketsResponse = devicePackets.Select
 					(
 						devicePacket => autoMapper.Map<DevicePacket, DevicePacketResponse>(devicePacket)
@@ -45,12 +48,12 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var device = await unitOfWork.DeviceRepository.GetByIdAsync(deviceId);
+				var device = await mediator.Send(new GetDeviceByIdQuery { id = deviceId });
 				if (device == null)
 				{
 					throw new Exception("Device not found");
 				}
-				return autoMapper.Map<DevicePacket, DevicePacketResponse>(await unitOfWork.DevicePacketRepository.GetByDeviceIdAsync(deviceId));
+				return autoMapper.Map<DevicePacket, DevicePacketResponse>(await mediator.Send(new GetDevicePacketByDeviceIdQuery { deviceId = deviceId }));
 			}
 			catch (Exception)
 			{
@@ -61,7 +64,7 @@ namespace BusinessLogicLayer.Services
 		{
 			try
 			{
-				var devicePacket = await GetLatestDevicePacketByDeviceId(deviceId);
+				var devicePacket = await mediator.Send(new GetDevicePacketByDeviceIdQuery { deviceId = deviceId });
 				byte[] buffer = new byte[30];
 				buffer = Convert.FromBase64String(devicePacket.RawData);
 				List<byte> listbyte = buffer.ToList();
@@ -85,7 +88,14 @@ namespace BusinessLogicLayer.Services
 		}
 		public async Task<DevicePacket?> GetById(int id)
 		{
-			return await unitOfWork.DevicePacketRepository.GetByIdAsync(id);
+			try
+			{
+				return await mediator.Send(new GetDevicePacketByIdQuery { id = id });
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 		}
 	}
 }
