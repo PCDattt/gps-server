@@ -1,7 +1,10 @@
 ﻿using BusinessLogicLayer.Models;
+using DataAccessLayer.CQRS.DeviceFeature.Queries;
+using DataAccessLayer.CQRS.DevicePacketFeature.Commands;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using DataTransferObject.Entities;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -30,7 +33,7 @@ namespace BusinessLogicLayer.BackgroundServices
 				{
 					using (var scope = scopeFactory.CreateScope())
 					{
-						var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+						var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
 						byte[] buffer = new byte[30];
 						int bytesRead;
@@ -49,15 +52,15 @@ namespace BusinessLogicLayer.BackgroundServices
 								receivedPacket.PrintInformation();
 
 								//Get DeviceId
-								var device = await unitOfWork.DeviceRepository.GetBySerialNumberAsync(receivedPacket.DeviceId);
-								
+							    var device = await mediator.Send(new GetDeviceBySerialNumberQuery { serialNumber = receivedPacket.DeviceId });
+
 								//Save packet to database
 								DevicePacket devicePacket = new()
-								{
-									DeviceId = device.Id,
-									RawData = Convert.ToBase64String(buffer)
-								};
-								_ = await unitOfWork.DevicePacketRepository.AddAsync(devicePacket);
+									{
+										DeviceId = device.Id,
+										RawData = Convert.ToBase64String(buffer)
+									};
+								_ = await mediator.Send(new AddDevicePacketCommand { devicePacket = devicePacket });
 
 								//Send response packet
 								BasePacket responsePacket = PacketFactory.GetPacket(packetId + 1);
